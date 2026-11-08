@@ -1,0 +1,3 @@
+# Extra packages available inside the sandbox (one per line), e.g.:
+# numpy
+# sympy

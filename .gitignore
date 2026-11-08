@@ -1,0 +1,12 @@
+node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.venv/
+venv/
+backend/data/
+.env
+.pytest_cache/
+*.stackdump
+*.tsbuildinfo
+.impeccable/

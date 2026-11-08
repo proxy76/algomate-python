@@ -1,0 +1,34 @@
+[Unit]
+Description=AlgoMate Python (online Python editor)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=algomate
+Group=algomate
+# Needed to start sandbox containers. Note: docker group access is root-equivalent,
+# which is why this account does nothing else and has no login shell.
+SupplementaryGroups=docker
+WorkingDirectory=/opt/algomate-python/backend
+EnvironmentFile=/etc/algomate-python.env
+Environment=HOME=/var/lib/algomate-python DOCKER_CONFIG=/var/lib/algomate-python/.docker
+# One worker on purpose: rate limits and the run semaphore live in memory.
+ExecStart=/opt/algomate-python/backend/.venv/bin/uvicorn app.main:app \
+    --host 127.0.0.1 --port 8000 --workers 1 \
+    --proxy-headers --forwarded-allow-ips 127.0.0.1 \
+    --ws-max-size 1048576 --no-server-header
+Restart=always
+RestartSec=3
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/algomate-python
+ProtectKernelTunables=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
